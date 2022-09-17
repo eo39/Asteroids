@@ -8,8 +8,6 @@ internal class EnemyShip : GameObject
         this.ObjectType = ObjectType.EnemyShip;
         this.PositionX  = positionX;
         this.PositionY  = positionY;
-        this.OffsetX    = -6;
-        this.OffsetY    = 0;
         this.Health     = 3;
         this.Size       = 80;
     }

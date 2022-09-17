@@ -1,5 +1,7 @@
 ﻿namespace Asteroids;
 
+using System.Numerics;
+
 internal abstract class GameObject
 {
     protected Bitmap Bitmap;
@@ -7,11 +9,10 @@ internal abstract class GameObject
     public ObjectType ObjectType { get; protected set; }
     public int PositionX         { get; set; }
     public int PositionY         { get; set; }
-    public int OffsetX           { get; protected set; }
-    public int OffsetY           { get; protected set; }
+    public double Speed          { get; set; }
     public int Health            { get; set; }
     public int Size              { get; protected set; }
-    public int RotationAngle     { get; set; }
+    public int RotationDegree    { get; set; }
 
     public abstract void Update(Game game);
 
@@ -56,10 +57,20 @@ internal abstract class GameObject
         float y = this.Size / 2f;
 
         graphics.TranslateTransform(x, y);
-        graphics.RotateTransform(this.RotationAngle);
+        graphics.RotateTransform(this.RotationDegree);
         graphics.TranslateTransform(-x, -y);
         graphics.DrawImage(this.Bitmap, 0, 0, this.Size, this.Size);
         
         return returnBitmap;
+    }
+
+    public Vector2 GetNewPosition()
+    {
+        double rotationAngle = Math.PI * this.RotationDegree / 180.0;
+
+        float offsetX = (float) (Math.Cos(rotationAngle) * this.Speed);
+        float offsetY = (float) (Math.Sin(rotationAngle) * this.Speed);
+
+        return new Vector2(offsetX, offsetY);
     }
 }

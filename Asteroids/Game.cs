@@ -45,8 +45,8 @@ internal class Game
         this.CommandManager.CreateNewRoster();
         this.UpdateGameObjects();
 
-        if (this.GameObjects.Count(gameObject => gameObject.ObjectType != ObjectType.Bullet) < 2)
-            this.GenerateEnemies();
+     //   if (this.GameObjects.Count(gameObject => gameObject.ObjectType != ObjectType.Bullet) < 2)
+     //     this.GenerateEnemies();
 
         if (this.PlayerShip.Health < 1)
             this.CurrentState = this.defeatState;
@@ -187,12 +187,18 @@ internal class Game
 
     private void DrawInterface(Graphics graphics)
     {
-        graphics.DrawString("Score: " + this.Score, this.font, Brushes.Black, this.GameFieldWidth - 165, 10);
-        graphics.DrawString("Player's health: " + this.PlayerShip.Health, this.font, Brushes.Black, this.GameFieldWidth - 165, 30);
+        graphics.DrawString($"Score: {this.Score}", this.font, Brushes.Black, 0, 10);
+        graphics.DrawString($"Player's health: {this.PlayerShip.Health}", this.font, Brushes.Black, 0, 30);
+        graphics.DrawString($"Rotate angle: {this.PlayerShip.RotationDegree}", this.font, Brushes.Black, 0, 50);
+        
+#if DEBUG
+        graphics.DrawString($"X: {this.PlayerShip.PositionX}, Y: {this.PlayerShip.PositionY}", this.font, Brushes.Black, 0, 100);
+        graphics.DrawString($"Speed: {this.PlayerShip.Speed}", this.font, Brushes.Black, 0, 120);
+#endif
 
         if (this.CurrentState is DefeatState)
             graphics.DrawString("Press Shift to reverse time  \nPress R to restart",
-                this.font, Brushes.Black, this.GameFieldWidth / 2 - 80, this.GameFieldHeight / 2);
+                this.font, Brushes.Black, this.GameFieldWidth / 2 - 80, this.GameFieldHeight / 2f);
     }
 
     private void DrawGameObjects(Graphics graphics)

@@ -2,15 +2,12 @@
 
 internal class PlayerShip : GameObject
 {
-    private readonly int maxPositionX;
-
     private MoveMode playerMoveMode;
     private bool isPlayerShooting;
     private int delayOfShot;
 
     public PlayerShip(int maxPositionX)
     {
-        this.maxPositionX     = maxPositionX;
         this.Bitmap           = Properties.Resources.PlayerShip;
         this.ObjectType       = ObjectType.PlayerShip;
         this.PositionX        = 100;
@@ -19,7 +16,7 @@ internal class PlayerShip : GameObject
         this.Size             = 80;
         this.delayOfShot      = 0;
         this.isPlayerShooting = false;
-        this.RotationAngle    = 0;
+        this.RotationDegree   = 0;
     }
 
     private void DecreaseDelayOfShot(int valueOfDecrease)
@@ -35,23 +32,18 @@ internal class PlayerShip : GameObject
 
     public override void Update(Game game)
     {
-        this.OffsetX = 0;
-        this.OffsetY = 0;
-
         if (this.playerMoveMode.HasFlag(MoveMode.Left)) 
             game.CommandManager.ExecuteCommand(new CommandRotate(this, angleOffset: -5));
 
         if (this.playerMoveMode.HasFlag(MoveMode.Right)) 
             game.CommandManager.ExecuteCommand(new CommandRotate(this, angleOffset: 5));
 
-        if (this.playerMoveMode.HasFlag(MoveMode.Up))
-            this.OffsetY = -8;
-        
-        if (this.playerMoveMode.HasFlag(MoveMode.Down))
-            this.OffsetY = 8;
+        double speedDelta = this.playerMoveMode.HasFlag(MoveMode.Up) ? 0.5 : -0.3;
+        game.CommandManager.ExecuteCommand(new CommandChangeSpeed(this, speedDelta));
 
         game.CommandManager.ExecuteCommand(new CommandMove(this));
 
+        /*
         this.PositionX = this.PositionX + this.Size / 2 > this.maxPositionX
             ? this.maxPositionX - this.Size / 2
             : this.PositionX;
@@ -71,6 +63,7 @@ internal class PlayerShip : GameObject
             game.CommandManager.ExecuteCommand(new CommandCreate(game.GameObjects, new Bullet(this.PositionX + this.Size / 2, this.PositionY)));
             this.ReloadWeapon();
         }
+        */
     }
 
     public void StartMoving(MoveMode moveMode)

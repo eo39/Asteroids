@@ -1,27 +1,27 @@
 ﻿namespace Asteroids;
 
+using System.Numerics;
+
 internal class CommandMove : ICommand
 {
     private readonly GameObject gameObject;
-    private readonly int offsetX;
-    private readonly int offsetY;
+    private readonly Vector2 offset;
 
     public CommandMove(GameObject gameObject)
     {
         this.gameObject = gameObject;
-        this.offsetX    = gameObject.OffsetX;
-        this.offsetY    = gameObject.OffsetY;
+        this.offset     = gameObject.GetNewPosition();
     }
 
     public void Execute()
     {
-        this.gameObject.PositionX += this.offsetX;
-        this.gameObject.PositionY += this.offsetY;
+        this.gameObject.PositionX += (int) this.offset.X;
+        this.gameObject.PositionY += (int) this.offset.Y;
     }
 
     public void Undo()
     {
-        this.gameObject.PositionX -= this.offsetX;
-        this.gameObject.PositionY -= this.offsetY;
+        this.gameObject.PositionX -= (int) this.offset.X;
+        this.gameObject.PositionY -= (int) this.offset.Y;
     }
 }

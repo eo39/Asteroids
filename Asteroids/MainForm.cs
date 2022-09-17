@@ -11,8 +11,8 @@ public partial class MainForm : Form
         this.InitializeComponent();
 
         this.gameField.Paint += this.Draw;
-
-        this.game.StartGame(this.ClientRectangle.Width, this.ClientRectangle.Height);
+        
+        this.game.StartGame(this.gameField.Width, this.gameField.Height);
     }
 
     private void Draw(object? sender, PaintEventArgs e)
@@ -29,7 +29,6 @@ public partial class MainForm : Form
 
     private void DownKey(object sender, KeyEventArgs e)
     {
-          
         this.game.DownKey(e.KeyCode);
     }
 

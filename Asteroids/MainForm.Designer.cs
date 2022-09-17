@@ -29,7 +29,7 @@ partial class MainForm
     /// </summary>
     private void InitializeComponent()
     {
-        this.components = new System.ComponentModel.Container();
+            this.components = new System.ComponentModel.Container();
             this.gameField = new System.Windows.Forms.PictureBox();
             this.Timer = new System.Windows.Forms.Timer(this.components);
             this.MenuStrip = new System.Windows.Forms.MenuStrip();
@@ -43,8 +43,9 @@ partial class MainForm
             // 
             this.gameField.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gameField.Location = new System.Drawing.Point(0, 28);
+            this.gameField.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.gameField.Name = "gameField";
-            this.gameField.Size = new System.Drawing.Size(1902, 1027);
+            this.gameField.Size = new System.Drawing.Size(1800, 722);
             this.gameField.TabIndex = 0;
             this.gameField.TabStop = false;
             this.gameField.Paint += new System.Windows.Forms.PaintEventHandler(this.Draw);
@@ -63,7 +64,7 @@ partial class MainForm
             this.helpToolStripMenuItem});
             this.MenuStrip.Location = new System.Drawing.Point(0, 0);
             this.MenuStrip.Name = "MenuStrip";
-            this.MenuStrip.Size = new System.Drawing.Size(1902, 28);
+            this.MenuStrip.Size = new System.Drawing.Size(1800, 28);
             this.MenuStrip.TabIndex = 1;
             this.MenuStrip.Text = "MenuStrip";
             // 
@@ -83,14 +84,15 @@ partial class MainForm
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1902, 1055);
+            this.ClientSize = new System.Drawing.Size(1800, 750);
             this.Controls.Add(this.gameField);
             this.Controls.Add(this.MenuStrip);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = this.MenuStrip;
+            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
@@ -102,6 +104,7 @@ partial class MainForm
             this.MenuStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
+
     }
 
     #endregion

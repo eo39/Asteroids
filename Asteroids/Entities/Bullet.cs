@@ -8,8 +8,6 @@ internal class Bullet : GameObject
         this.ObjectType = ObjectType.Bullet;
         this.PositionX  = positionX;
         this.PositionY  = positionY;
-        this.OffsetX    = 8;
-        this.OffsetY    = 0;
         this.Health     = 1;
         this.Size       = 14;
     }
