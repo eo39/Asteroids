@@ -6,13 +6,13 @@ internal abstract class GameObject
 {
     protected Bitmap Bitmap;
 
-    public ObjectType ObjectType { get; protected set; }
+    public ObjectType ObjectType { get; protected init; }
     public int PositionX         { get; set; }
     public int PositionY         { get; set; }
     public double Speed          { get; set; }
     public int Health            { get; set; }
-    public int Size              { get; protected set; }
-    public int RotationDegree    { get; set; }
+    protected int Size           { get; init; }
+    public int RotationDegrees    { get; set; }
 
     public virtual void Update(Game game)
     {
@@ -29,6 +29,11 @@ internal abstract class GameObject
         
         if (this.PositionY < 0)
             game.CommandManager.ExecuteCommand(new CommandTeleport(this, this.PositionX, game.GameFieldHeight));
+    }
+
+    public virtual bool IsDestroyed()
+    {
+        return this.Health == 0;
     }
 
     public bool IntersectsWith(GameObject gameObject)
@@ -52,6 +57,16 @@ internal abstract class GameObject
 
         return componentX + componentY;
     }
+    
+    public Vector2 GetNewPosition()
+    {
+        double rotationAngle = Math.PI * this.RotationDegrees / 180.0;
+
+        float offsetX = (float) (Math.Cos(rotationAngle) * this.Speed);
+        float offsetY = (float) (Math.Sin(rotationAngle) * this.Speed);
+
+        return new Vector2(offsetX, offsetY);
+    }
 
     public void Draw(Graphics graphics)
     {
@@ -72,20 +87,10 @@ internal abstract class GameObject
         float y = this.Size / 2f;
 
         graphics.TranslateTransform(x, y);
-        graphics.RotateTransform(this.RotationDegree);
+        graphics.RotateTransform(this.RotationDegrees);
         graphics.TranslateTransform(-x, -y);
         graphics.DrawImage(this.Bitmap, 0, 0, this.Size, this.Size);
         
         return returnBitmap;
-    }
-
-    public Vector2 GetNewPosition()
-    {
-        double rotationAngle = Math.PI * this.RotationDegree / 180.0;
-
-        float offsetX = (float) (Math.Cos(rotationAngle) * this.Speed);
-        float offsetY = (float) (Math.Sin(rotationAngle) * this.Speed);
-
-        return new Vector2(offsetX, offsetY);
     }
 }

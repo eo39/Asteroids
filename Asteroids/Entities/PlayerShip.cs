@@ -6,7 +6,7 @@ internal class PlayerShip : GameObject
     private bool isPlayerShooting;
     private int delayOfShot;
 
-    public PlayerShip(int maxPositionX)
+    public PlayerShip()
     {
         this.Bitmap           = Properties.Resources.PlayerShip;
         this.ObjectType       = ObjectType.PlayerShip;
@@ -16,7 +16,7 @@ internal class PlayerShip : GameObject
         this.Size             = 80;
         this.delayOfShot      = 0;
         this.isPlayerShooting = false;
-        this.RotationDegree   = 0;
+        this.RotationDegrees   = 0;
     }
 
     private void DecreaseDelayOfShot(int valueOfDecrease)

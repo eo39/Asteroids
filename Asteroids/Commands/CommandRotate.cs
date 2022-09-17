@@ -9,7 +9,7 @@ internal class CommandRotate : ICommand
     public CommandRotate(GameObject gameObject, int angleOffset)
     {
         this.gameObject    = gameObject;
-        this.rotationAngle = gameObject.RotationDegree;
+        this.rotationAngle = gameObject.RotationDegrees;
         this.angleOffset   = angleOffset;
     }
 
@@ -17,7 +17,7 @@ internal class CommandRotate : ICommand
     {
         int newRotationAngle = this.rotationAngle + this.angleOffset;
 
-        this.gameObject.RotationDegree = newRotationAngle switch
+        this.gameObject.RotationDegrees = newRotationAngle switch
         {
             < 0   => 360 - newRotationAngle,
             > 360 => newRotationAngle - 360,
@@ -27,6 +27,6 @@ internal class CommandRotate : ICommand
 
     public void Undo()
     {
-        this.gameObject.RotationDegree = this.rotationAngle;
+        this.gameObject.RotationDegrees = this.rotationAngle;
     }
 }

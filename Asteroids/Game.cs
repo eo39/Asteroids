@@ -26,7 +26,7 @@ internal class Game
         this.GameFieldHeight = gameFieldHeight;
         this.Score           = 0;
 
-        this.GameObjects     = new List<GameObject> { new PlayerShip(gameFieldWidth) };
+        this.GameObjects     = new List<GameObject> { new PlayerShip() };
         this.CommandManager  = new CommandManager();
         
         this.NormalState     = new NormalState(this);
@@ -112,7 +112,7 @@ internal class Game
                 }
             }
 
-            if (gameObject.ObjectType != ObjectType.PlayerShip && gameObject.Health == 0)
+            if (gameObject.ObjectType != ObjectType.PlayerShip && gameObject.IsDestroyed())
                 this.CommandManager.ExecuteCommand(new CommandDeath(this.GameObjects, gameObject));
         }
     }
@@ -189,7 +189,7 @@ internal class Game
     {
         graphics.DrawString($"Score: {this.Score}", this.font, Brushes.Black, 0, 10);
         graphics.DrawString($"Player's health: {this.PlayerShip.Health}", this.font, Brushes.Black, 0, 30);
-        graphics.DrawString($"Rotate angle: {this.PlayerShip.RotationDegree}", this.font, Brushes.Black, 0, 50);
+        graphics.DrawString($"Rotate angle: {this.PlayerShip.RotationDegrees}", this.font, Brushes.Black, 0, 50);
         
 #if DEBUG
         graphics.DrawString($"X: {this.PlayerShip.PositionX}, Y: {this.PlayerShip.PositionY}", this.font, Brushes.Black, 0, 100);
