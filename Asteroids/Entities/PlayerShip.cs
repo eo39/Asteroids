@@ -10,13 +10,16 @@ internal class PlayerShip : GameObject
     {
         this.Bitmap           = Properties.Resources.PlayerShip;
         this.ObjectType       = ObjectType.PlayerShip;
+        
         this.PositionX        = 100;
         this.PositionY        = 375;
+        
+        this.RotationDegrees  = 0;
         this.Health           = 5;
         this.Size             = 80;
+        
         this.delayOfShot      = 0;
         this.isPlayerShooting = false;
-        this.RotationDegrees   = 0;
     }
 
     private void DecreaseDelayOfShot(int valueOfDecrease)
@@ -42,16 +45,18 @@ internal class PlayerShip : GameObject
         game.CommandManager.ExecuteCommand(new CommandChangeSpeed(this, speedDelta));
 
         base.Update(game);
-
-        /*
+        
         this.DecreaseDelayOfShot(15);
 
         if (this.isPlayerShooting && this.delayOfShot <= 0)
         {
-            game.CommandManager.ExecuteCommand(new CommandCreate(game.GameObjects, new Bullet(this.PositionX + this.Size / 2, this.PositionY)));
+            var bulletPosition = this.GetBulletPosition();
+            var bullet = new Bullet(bulletPosition.X, bulletPosition.Y, this.RotationDegrees);
+            
+            game.CommandManager.ExecuteCommand(new CommandCreate(game.GameObjects, bullet));
+            
             this.ReloadWeapon();
         }
-        */
     }
 
     public void StartMoving(MoveMode moveMode)
@@ -106,4 +111,15 @@ internal class PlayerShip : GameObject
     {
         this.isPlayerShooting = false;
     }
+    
+    private Point GetBulletPosition()
+    {
+        double rotationAngle = Math.PI * this.RotationDegrees / 180.0;
+
+        int offsetX = (int) (Math.Cos(rotationAngle) * this.Size / 2);
+        int offsetY = (int) (Math.Sin(rotationAngle) * this.Size / 2);
+
+        return new Point(this.PositionX + offsetX, this.PositionY + offsetY);
+    }
+
 }

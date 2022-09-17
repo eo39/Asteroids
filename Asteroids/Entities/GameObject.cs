@@ -5,14 +5,15 @@ using System.Numerics;
 internal abstract class GameObject
 {
     protected Bitmap Bitmap;
-
     public ObjectType ObjectType { get; protected init; }
+    
     public int PositionX         { get; set; }
     public int PositionY         { get; set; }
+    
+    public int RotationDegrees   { get; set; }
     public double Speed          { get; set; }
     public int Health            { get; set; }
     protected int Size           { get; init; }
-    public int RotationDegrees    { get; set; }
 
     public virtual void Update(Game game)
     {

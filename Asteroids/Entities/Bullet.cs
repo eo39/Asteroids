@@ -10,9 +10,10 @@ internal class Bullet : GameObject
         
         this.PositionX       = positionX;
         this.PositionY       = positionY;
+        
         this.RotationDegrees = rotationDegrees;
-
         this.Speed           = 20;
+        
         this.Health          = 1;
         this.Size            = 14;
         this.lifetime        = 0;
