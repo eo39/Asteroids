@@ -33,29 +33,17 @@ internal class PlayerShip : GameObject
     public override void Update(Game game)
     {
         if (this.playerMoveMode.HasFlag(MoveMode.Left)) 
-            game.CommandManager.ExecuteCommand(new CommandRotate(this, angleOffset: -5));
+            game.CommandManager.ExecuteCommand(new CommandRotate(this, angleOffset: -2));
 
         if (this.playerMoveMode.HasFlag(MoveMode.Right)) 
-            game.CommandManager.ExecuteCommand(new CommandRotate(this, angleOffset: 5));
+            game.CommandManager.ExecuteCommand(new CommandRotate(this, angleOffset: 2));
 
         double speedDelta = this.playerMoveMode.HasFlag(MoveMode.Up) ? 0.5 : -0.3;
         game.CommandManager.ExecuteCommand(new CommandChangeSpeed(this, speedDelta));
 
-        game.CommandManager.ExecuteCommand(new CommandMove(this));
+        base.Update(game);
 
         /*
-        this.PositionX = this.PositionX + this.Size / 2 > this.maxPositionX
-            ? this.maxPositionX - this.Size / 2
-            : this.PositionX;
-
-        this.PositionX = this.PositionX - this.Size / 2 < 0
-            ? this.Size / 2
-            : this.PositionX;
-
-        this.PositionY = this.PositionY - this.Size / 2 < 0
-            ? this.Size / 2
-            : this.PositionY;
-
         this.DecreaseDelayOfShot(15);
 
         if (this.isPlayerShooting && this.delayOfShot <= 0)

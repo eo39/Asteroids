@@ -13,9 +13,4 @@ internal class Meteor : GameObject
         this.Size           = 80;
         this.Health         = 10;
     }
-
-    public override void Update(Game game)
-    {
-        game.CommandManager.ExecuteCommand(new CommandMove(this));
-    }
 }

@@ -11,9 +11,4 @@ internal class Bullet : GameObject
         this.Health     = 1;
         this.Size       = 14;
     }
-
-    public override void Update(Game game)
-    {
-        game.CommandManager.ExecuteCommand(new CommandMove(this));
-    }
 }

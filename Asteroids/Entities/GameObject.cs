@@ -14,7 +14,22 @@ internal abstract class GameObject
     public int Size              { get; protected set; }
     public int RotationDegree    { get; set; }
 
-    public abstract void Update(Game game);
+    public virtual void Update(Game game)
+    {
+        game.CommandManager.ExecuteCommand(new CommandMove(this));
+
+        if (this.PositionX > game.GameFieldWidth)
+            game.CommandManager.ExecuteCommand(new CommandTeleport(this, 0, this.PositionY));
+        
+        if (this.PositionX < 0)
+            game.CommandManager.ExecuteCommand(new CommandTeleport(this, game.GameFieldWidth, this.PositionY));
+        
+        if (this.PositionY > game.GameFieldHeight)
+            game.CommandManager.ExecuteCommand(new CommandTeleport(this, this.PositionX, 0));
+        
+        if (this.PositionY < 0)
+            game.CommandManager.ExecuteCommand(new CommandTeleport(this, this.PositionX, game.GameFieldHeight));
+    }
 
     public bool IntersectsWith(GameObject gameObject)
     {
