@@ -121,6 +121,11 @@ internal partial class Game
         this.currentState = newState;
     }
 
+    public Point GetPlayerShipPosition()
+    {
+        return new Point(this.PlayerShip.PositionX, this.PlayerShip.PositionY);
+    }
+
     public void StartMovingPlayerShip(MoveMode moveMode)
     {
         this.PlayerShip.StartMoving(moveMode);

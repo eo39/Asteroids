@@ -18,18 +18,14 @@ internal class EnemyShip : GameObject
 
     public override void Update(Game game)
     {
-        /*
-        GameObject playerShip =
-            game.GameObjects.FirstOrDefault(gameObject => gameObject.ObjectType == ObjectType.PlayerShip);
+        Point thisObjectPosition = new Point(this.PositionX, this.PositionY);
+        Point playerShipPosition = game.GetPlayerShipPosition();
 
-
-        if (playerShip != null && Math.Abs(PositionY - playerShip.PositionY) <= playerShip.Size && DelayOfShot <= 0)
-        {
-           game.CommandManager.ExecuteCommand(new CommandCreate(game.GameObjects,
-                new BomberShipBullet(PositionX - Size, PositionY)));
-            ReloadWeapon();
-        }*/
+        int angleBetweenPoints = (int)Utils.GetAngleBetweenPoints(thisObjectPosition, playerShipPosition);
+        int angleOffset = angleBetweenPoints - this.RotationDegrees;
         
-        game.CommandManager.ExecuteCommand(new CommandMove(this));
+        game.CommandManager.ExecuteCommand(new CommandRotate(this, angleOffset));
+
+        base.Update(game);
     }
 }
