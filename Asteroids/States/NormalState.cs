@@ -29,7 +29,7 @@ internal class NormalState : IState
                 this.game.StartPlayerShipShooting();
                 break;
             case Keys.ShiftKey:
-                this.game.CurrentState = this.game.ReverseState;
+                this.game.SetCurrentState(this.game.ReverseState);
                 break;
         }
     }

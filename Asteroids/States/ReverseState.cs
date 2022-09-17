@@ -29,9 +29,11 @@ internal class ReverseState : IState
         switch (keyCode)
         {
             case Keys.ShiftKey:
-                this.game.CurrentState = this.game.NormalState;
+                this.game.SetCurrentState(this.game.NormalState);
+                
                 this.game.ClearPlayerShipsMoveMode();
                 this.game.StopPlayerShipShooting();
+                
                 this.reverseSpeed = 1;
                 break;
             case Keys.Left:
@@ -40,7 +42,7 @@ internal class ReverseState : IState
                     : this.reverseSpeed;
                 break;
             case Keys.Right:
-                this.reverseSpeed = this.reverseSpeed < 8 
+                this.reverseSpeed = this.reverseSpeed < 10 
                     ? this.reverseSpeed++ 
                     : this.reverseSpeed;
                 break;

@@ -14,7 +14,7 @@ internal class DefeatState : IState
         switch (keyCode)
         {
             case Keys.ShiftKey:
-                this.game.CurrentState = this.game.ReverseState;
+                this.game.SetCurrentState(this.game.ReverseState);
                 break;
             case Keys.R:
                 this.game.StartGame(this.game.GameFieldWidth, this.game.GameFieldHeight);

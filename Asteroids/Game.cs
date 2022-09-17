@@ -2,7 +2,7 @@
 
 using States;
 
-internal class Game
+internal partial class Game
 {
     public int GameFieldWidth { get; private set; }
     public int GameFieldHeight { get; private set; }
@@ -12,11 +12,10 @@ internal class Game
     public CommandManager CommandManager { get; private set; }
     public NormalState? NormalState { get; private set; }
     public ReverseState? ReverseState { get; private set; }
-    public IState? CurrentState { private get; set; }
-
-    private static readonly Random Random = new();
-    private readonly Font font = new("Arial", 15);
     
+    private static readonly Random Random = new();
+
+    private IState? currentState;
     private DefeatState? defeatState;
     private PlayerShip PlayerShip => (PlayerShip)this.GameObjects.First();
 
@@ -32,12 +31,12 @@ internal class Game
         this.NormalState     = new NormalState(this);
         this.ReverseState    = new ReverseState(this);
         this.defeatState     = new DefeatState(this);
-        this.CurrentState    = this.NormalState;
+        this.currentState    = this.NormalState;
     }
 
     public void TickTimer()
     {
-        this.CurrentState?.UpdateGame();
+        this.currentState?.UpdateGame();
     }
 
     public void Update()
@@ -45,11 +44,11 @@ internal class Game
         this.CommandManager.CreateNewRoster();
         this.UpdateGameObjects();
 
-     //   if (this.GameObjects.Count(gameObject => gameObject.ObjectType != ObjectType.Bullet) < 2)
-     //     this.GenerateEnemies();
+        if (this.GameObjects.Count(gameObject => gameObject.ObjectType != ObjectType.Bullet) < 2)
+          this.GenerateEnemies();
 
-        if (this.PlayerShip.Health < 1)
-            this.CurrentState = this.defeatState;
+        if (this.PlayerShip.IsDestroyed())
+            this.currentState = this.defeatState;
     }
 
     private void UpdateGameObjects()
@@ -117,6 +116,10 @@ internal class Game
         }
     }
 
+    public void SetCurrentState(IState? newState)
+    {
+        this.currentState = newState;
+    }
 
     public void StartMovingPlayerShip(MoveMode moveMode)
     {
@@ -148,63 +151,27 @@ internal class Game
         int generatedObjectsCount = Random.Next(1, 3);
 
         for (int i = 0; i < generatedObjectsCount; i++)
-            switch (Random.Next(1, 5))
+        {
+            GameObject? generatedEnemy = Random.Next(1, 4) switch
             {
-                case 1:
-                case 2:
-                    this.CommandManager.ExecuteCommand(new CommandCreate(this.GameObjects,
-                        new EnemyShip(this.GameFieldWidth, Random.Next(100, this.GameFieldHeight - 350))));
-                    break;
-                case 3:
-                    this.CommandManager.ExecuteCommand(new CommandCreate(this.GameObjects,
-                        new Meteor(Random.Next(this.GameFieldWidth - 100, this.GameFieldWidth), 0)));
-                    break;
-            }
+                1 or 2 => new EnemyShip(this.GameFieldWidth, Random.Next(100, this.GameFieldHeight - 350)),
+                3 => new Meteor(Random.Next(this.GameFieldWidth - 100, this.GameFieldWidth), 0),
+                _ => null
+            };
+
+            if (generatedEnemy != null)
+                this.CommandManager.ExecuteCommand(new CommandCreate(this.GameObjects, generatedEnemy));
+        }
     }
-
-
+    
     public void DownKey(Keys keyCode)
     {
-        this.CurrentState?.DownKey(keyCode);
+        this.currentState?.DownKey(keyCode);
     }
 
     public void UpKey(Keys keyCode)
     {
-        this.CurrentState?.UpKey(keyCode);
-    }
-
-    public void Draw(Graphics graphics)
-    {
-        this.DrawBackground(graphics);
-        this.DrawInterface(graphics);
-        this.DrawGameObjects(graphics);
-    }
-
-    private void DrawBackground(Graphics graphics)
-    {
-        graphics.FillRectangle(Brushes.LightCyan, 0, 0, this.GameFieldWidth, this.GameFieldHeight);
-    }
-
-    private void DrawInterface(Graphics graphics)
-    {
-        graphics.DrawString($"Score: {this.Score}", this.font, Brushes.Black, 0, 10);
-        graphics.DrawString($"Player's health: {this.PlayerShip.Health}", this.font, Brushes.Black, 0, 30);
-        graphics.DrawString($"Rotate angle: {this.PlayerShip.RotationDegrees}", this.font, Brushes.Black, 0, 50);
-        
-#if DEBUG
-        graphics.DrawString($"X: {this.PlayerShip.PositionX}, Y: {this.PlayerShip.PositionY}", this.font, Brushes.Black, 0, 100);
-        graphics.DrawString($"Speed: {this.PlayerShip.Speed}", this.font, Brushes.Black, 0, 120);
-#endif
-
-        if (this.CurrentState is DefeatState)
-            graphics.DrawString("Press Shift to reverse time  \nPress R to restart",
-                this.font, Brushes.Black, this.GameFieldWidth / 2 - 80, this.GameFieldHeight / 2f);
-    }
-
-    private void DrawGameObjects(Graphics graphics)
-    {
-        foreach (GameObject gameObject in this.GameObjects)
-            gameObject.Draw(graphics);
+        this.currentState?.UpKey(keyCode);
     }
 
     private readonly Dictionary<ObjectType, ObjectType> intersectTable = new()
@@ -218,12 +185,10 @@ internal class Game
                               ObjectType.Chip,
 
         [ObjectType.EnemyShip] = ObjectType.PlayerShip |
-                                 ObjectType.Bullet |
-                                 ObjectType.Meteor,
+                                 ObjectType.Bullet,
 
         [ObjectType.Chip] = ObjectType.PlayerShip |
-                            ObjectType.Bullet |
-                            ObjectType.Meteor,
+                            ObjectType.Bullet,
 
         [ObjectType.Meteor] = ObjectType.PlayerShip |
                               ObjectType.Bullet
