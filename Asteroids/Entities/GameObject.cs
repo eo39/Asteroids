@@ -11,6 +11,7 @@ internal abstract class GameObject
     public int OffsetY           { get; protected set; }
     public int Health            { get; set; }
     public int Size              { get; protected set; }
+    public int RotationAngle     { get; set; }
 
     public abstract void Update(Game game);
 
@@ -41,6 +42,24 @@ internal abstract class GameObject
         int x = this.PositionX - this.Size / 2;
         int y = this.PositionY - this.Size / 2;
         
-        graphics.DrawImage(this.Bitmap, x, y, this.Size, this.Size);
+       Bitmap rotatedBitmap = this.RotateImage();
+
+       graphics.DrawImage(rotatedBitmap, x, y, this.Size, this.Size);
+    }
+    
+    private Bitmap RotateImage()
+    {
+        Bitmap returnBitmap = new Bitmap(this.Size, this.Size);
+        using Graphics graphics = Graphics.FromImage(returnBitmap);
+        
+        float x = this.Size / 2f;
+        float y = this.Size / 2f;
+
+        graphics.TranslateTransform(x, y);
+        graphics.RotateTransform(this.RotationAngle);
+        graphics.TranslateTransform(-x, -y);
+        graphics.DrawImage(this.Bitmap, 0, 0, this.Size, this.Size);
+        
+        return returnBitmap;
     }
 }

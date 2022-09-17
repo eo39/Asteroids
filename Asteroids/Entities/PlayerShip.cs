@@ -19,6 +19,7 @@ internal class PlayerShip : GameObject
         this.Size             = 80;
         this.delayOfShot      = 0;
         this.isPlayerShooting = false;
+        this.RotationAngle    = 0;
     }
 
     private void DecreaseDelayOfShot(int valueOfDecrease)
@@ -37,12 +38,15 @@ internal class PlayerShip : GameObject
         this.OffsetX = 0;
         this.OffsetY = 0;
 
-        if (this.playerMoveMode.HasFlag(MoveMode.Left))
-            this.OffsetX = -8;
-        if (this.playerMoveMode.HasFlag(MoveMode.Right))
-            this.OffsetX = 8;
+        if (this.playerMoveMode.HasFlag(MoveMode.Left)) 
+            game.CommandManager.ExecuteCommand(new CommandRotate(this, angleOffset: -5));
+
+        if (this.playerMoveMode.HasFlag(MoveMode.Right)) 
+            game.CommandManager.ExecuteCommand(new CommandRotate(this, angleOffset: 5));
+
         if (this.playerMoveMode.HasFlag(MoveMode.Up))
             this.OffsetY = -8;
+        
         if (this.playerMoveMode.HasFlag(MoveMode.Down))
             this.OffsetY = 8;
 
