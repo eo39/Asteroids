@@ -3,21 +3,28 @@
 internal class CommandCreate : ICommand
 {
     private readonly List<GameObject> gameObjects;
-    private readonly GameObject gameObject;
+    private readonly GameObject[] gameObjectsToCreate;
 
     public CommandCreate(List<GameObject> gameObjects, GameObject gameObject)
     {
-        this.gameObjects = gameObjects;
-        this.gameObject  = gameObject;
+        this.gameObjects         = gameObjects;
+        this.gameObjectsToCreate = new[] { gameObject };
+    }
+    
+    public CommandCreate(List<GameObject> gameObjects, GameObject[] gameObjectsToCreate)
+    {
+        this.gameObjects         = gameObjects;
+        this.gameObjectsToCreate = gameObjectsToCreate;
     }
 
     public void Execute()
     {
-        this.gameObjects.Add(this.gameObject);
+        this.gameObjects.AddRange(this.gameObjectsToCreate);
     }
 
     public void Undo()
     {
-        this.gameObjects.Remove(this.gameObject);
+        foreach (var gameObject in this.gameObjectsToCreate) 
+            this.gameObjects.Remove(gameObject);
     }
 }

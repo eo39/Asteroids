@@ -61,22 +61,6 @@ internal partial class Game
         {
             GameObject gameObject = this.GameObjects[i];
 
-            /*
-            if (gameObject.PositionY + gameObject.Size / 2 >= ground.PositionY + 5 &&
-                CanIntersect(gameObject, ground))
-            {
-                if (gameObject.ObjectType == ObjectType.PlayerShip)
-                    CurrentState = defeatState;
-                else
-                {
-                    CommandManager.ExecuteCommand(new CommandDeath(GameObjects, gameObject));
-                    CommandManager.ExecuteCommand(new CommandCreate(GameObjects, new Blast(new Point(
-                        gameObject.PositionX, gameObject.PositionY + gameObject.Size / 2))));
-                    continue;
-                }
-            }
-            */
-
             for (int j = i; j < this.GameObjects.Count; j++)
             {
                 GameObject nextGameObject = this.GameObjects[j];
@@ -89,13 +73,7 @@ internal partial class Game
 
                     this.CommandManager.ExecuteCommand(new CommandTakeDamage(gameObject, amountOfDamage));
                     this.CommandManager.ExecuteCommand(new CommandTakeDamage(nextGameObject, amountOfDamage));
-
-                    /*
-                    if (gameObject.Health <= 0 || nextGameObject.Health <= 0)
-                        CommandManager.ExecuteCommand(new CommandCreate(GameObjects,
-                            new Blast(gameObject.GetMiddleOfVector(nextGameObject))));
-                            */
-
+                    
                     switch (gameObject.ObjectType)
                     {
                         case ObjectType.PlayerShip:
@@ -112,7 +90,19 @@ internal partial class Game
             }
 
             if (gameObject.ObjectType != ObjectType.PlayerShip && gameObject.IsDestroyed())
+            {
                 this.CommandManager.ExecuteCommand(new CommandDeath(this.GameObjects, gameObject));
+
+                if (gameObject.ObjectType == ObjectType.Meteor)
+                {
+                    var firstChip = new Chip(gameObject.PositionX + 5, gameObject.PositionY + 5);
+                    var secondChip = new Chip(gameObject.PositionX - 5, gameObject.PositionY - 5);
+
+                    GameObject[] chipsToCrete = { firstChip, secondChip };
+                    
+                    this.CommandManager.ExecuteCommand(new CommandCreate(this.GameObjects, chipsToCrete));
+                }
+            }
         }
     }
 

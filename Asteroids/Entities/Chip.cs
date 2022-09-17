@@ -1,18 +1,18 @@
 ﻿namespace Asteroids;
 
-internal class Meteor : GameObject
+internal class Chip : GameObject
 {
-    public Meteor(int positionX, int positionY)
+    public Chip(int positionX, int positionY)
     {
         this.Bitmap          = Properties.Resources.Meteor;
-        this.ObjectType      = ObjectType.Meteor;
+        this.ObjectType      = ObjectType.Chip;
         
         this.PositionX       = positionX;
         this.PositionY       = positionY;
         
         this.RotationDegrees = 135;
         this.Speed           = 5;
-        this.Health          = 2;
-        this.Size            = 80;
+        this.Health          = 1;
+        this.Size            = 40;
     }
 }
