@@ -1,6 +1,6 @@
 ﻿namespace Asteroids;
 
-internal class Bullet : GameObject
+internal class Bullet : GameObject, ITemporaryObject
 {
     private int lifetime;
     
@@ -22,8 +22,18 @@ internal class Bullet : GameObject
 
     public override void Update(Game game)
     {
-        this.lifetime++;
+        game.CommandManager.ExecuteCommand(new CommandChangeLifetime(this));
         
         base.Update(game);
+    }
+    
+    public void IncreaseLifetime()
+    {
+        this.lifetime++;
+    }
+
+    public void DecreaseLifetime()
+    {
+        this.lifetime--;
     }
 }

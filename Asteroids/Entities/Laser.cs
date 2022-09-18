@@ -1,6 +1,6 @@
 ﻿namespace Asteroids;
 
-internal class Laser : GameObject
+internal class Laser : GameObject, ITemporaryObject
 {
     private int lifetime;
     
@@ -18,7 +18,7 @@ internal class Laser : GameObject
 
     public override void Update(Game game)
     {
-        this.lifetime++;
+        game.CommandManager.ExecuteCommand(new CommandChangeLifetime(this));
     }
 
     public override bool IntersectsWith(GameObject gameObject)
@@ -48,6 +48,16 @@ internal class Laser : GameObject
 
         return distanceToObject <= (this.Size + gameObject.Size) / 2.0;
     }
+    
+    public void IncreaseLifetime()
+    {
+        this.lifetime++;
+    }
+
+    public void DecreaseLifetime()
+    {
+        this.lifetime--;
+    }
 
     public override void Draw(Graphics graphics)
     {
@@ -55,7 +65,7 @@ internal class Laser : GameObject
 
         graphics.DrawLine(Pens.Red, startPosition, this.GetFinishPosition());
     }
-    
+
     private Point GetFinishPosition()
     {
         double rotationAngle = this.RotationDegrees.ToRadians();

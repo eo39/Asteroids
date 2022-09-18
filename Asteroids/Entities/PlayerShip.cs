@@ -1,34 +1,24 @@
 ﻿namespace Asteroids;
 
-internal class PlayerShip : GameObject
+internal class PlayerShip : GameObject, IArmedObject
 {
     private MoveMode playerMoveMode;
     private bool isPlayerShooting;
-    private int delayOfShot;
     private bool isPlayerUsedLaser;
     
-    public int DelayOfLaser { get; private set; }
+    public int DelayOfShot { get; set; }
+    public int DelayOfLaser { get; set; }
 
     public PlayerShip(CreationParams creationParams) : base(creationParams)
     {
         this.Bitmap           = Properties.Resources.PlayerShip;
         this.ObjectType       = ObjectType.PlayerShip;
         
-        this.Health           = 5;
+        this.Health           = 1;
         this.Size             = 80;
         this.isPlayerShooting = false;
-        this.delayOfShot      = 0;
 
         this.isPlayerUsedLaser = false;
-    }
-
-    private void DecreaseWeaponsDelay()
-    {
-        if (this.delayOfShot > 0)
-            this.delayOfShot--;
-        
-        if (this.DelayOfLaser > 0)
-            this.DelayOfLaser--;
     }
 
     public override void Update(Game game)
@@ -43,12 +33,17 @@ internal class PlayerShip : GameObject
         game.CommandManager.ExecuteCommand(new CommandChangeSpeed(this, speedDelta));
 
         base.Update(game);
-        
-        this.DecreaseWeaponsDelay();
+        this.UpdateWeapon(game);
+    }
 
-        if (this.isPlayerShooting && this.delayOfShot <= 0)
+    private void UpdateWeapon(Game game)
+    {
+        game.CommandManager.ExecuteCommand(new CommandChangeShotgunDelay(this, -1));
+        game.CommandManager.ExecuteCommand(new CommandChangeLaserDelay(this, -1));
+
+        if (this.isPlayerShooting && this.DelayOfShot == 0)
         {
-            var bulletPosition = this.GetBulletPosition();
+            var bulletPosition = this.GetArmoryPosition();
             
             var bulletCreationParams = new CreationParams
             {
@@ -58,29 +53,47 @@ internal class PlayerShip : GameObject
             };
             
             var bullet = new Bullet(bulletCreationParams);
-            
             game.CommandManager.ExecuteCommand(new CommandCreate(game.GameObjects, bullet));
             
-            this.delayOfShot = 15;
+            game.CommandManager.ExecuteCommand(new CommandChangeShotgunDelay(this, 15));
         }
 
-        if (this.isPlayerUsedLaser && this.DelayOfLaser <= 0)
+        if (this.isPlayerUsedLaser && this.DelayOfLaser == 0)
         {
-            Point bulletPosition = this.GetBulletPosition();
+            Point laserPosition = this.GetArmoryPosition();
             
-            var bulletCreationParams = new CreationParams
+            var laserCreationParams = new CreationParams
             {
-                PositionX       = bulletPosition.X,
-                PositionY       = bulletPosition.Y,
+                PositionX       = laserPosition.X,
+                PositionY       = laserPosition.Y,
                 RotationDegrees = this.RotationDegrees
             };
             
-            var bullet = new Laser(bulletCreationParams);
+            var laser = new Laser(laserCreationParams);
+            game.CommandManager.ExecuteCommand(new CommandCreate(game.GameObjects, laser));
             
-            game.CommandManager.ExecuteCommand(new CommandCreate(game.GameObjects, bullet));
-
-            this.DelayOfLaser = 150;
+            game.CommandManager.ExecuteCommand(new CommandChangeLaserDelay(this, 150));
         }
+    }
+
+    public void StartShooting()
+    {
+        this.isPlayerShooting = true;
+    }
+
+    public void StopShooting()
+    {
+        this.isPlayerShooting = false;
+    }
+    
+    public void StartUsedLaser()
+    {
+        this.isPlayerUsedLaser = true;
+    }
+
+    public void StopUsedLaser()
+    {
+        this.isPlayerUsedLaser = false;
     }
 
     public void StartMoving(MoveMode moveMode)
@@ -126,27 +139,7 @@ internal class PlayerShip : GameObject
         this.playerMoveMode = 0;
     }
 
-    public void StartShooting()
-    {
-        this.isPlayerShooting = true;
-    }
-
-    public void StopShooting()
-    {
-        this.isPlayerShooting = false;
-    }
-    
-    public void StartUsedLaser()
-    {
-        this.isPlayerUsedLaser = true;
-    }
-
-    public void StopUsedLaser()
-    {
-        this.isPlayerUsedLaser = false;
-    }
-    
-    private Point GetBulletPosition()
+    private Point GetArmoryPosition()
     {
         double rotationAngle = this.RotationDegrees.ToRadians();
 
