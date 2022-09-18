@@ -21,7 +21,7 @@ internal class CommandChangeSpeed : ICommand
         this.gameObject.Speed = newSpeed switch
         {
             <= 0  => 0,
-            >= 20 => 20,
+            >= 10 => 10,
             _     => newSpeed
         };
     }

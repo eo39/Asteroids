@@ -2,16 +2,12 @@
 
 internal class Meteor : GameObject
 {
-    public Meteor(int positionX, int positionY)
+    public Meteor(CreationParams creationParams) : base(creationParams)
     {
         this.Bitmap          = Properties.Resources.Meteor;
         this.ObjectType      = ObjectType.Meteor;
         
-        this.PositionX       = positionX;
-        this.PositionY       = positionY;
-        
-        this.RotationDegrees = 135;
-        this.Speed           = 5;
+        this.Speed           = 2;
         this.Health          = 2;
         this.Size            = 80;
     }

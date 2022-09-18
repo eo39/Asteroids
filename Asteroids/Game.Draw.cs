@@ -21,12 +21,13 @@ internal partial class Game
     private void DrawInterface(Graphics graphics)
     {
         graphics.DrawString($"Score: {this.Score}", this.font, Brushes.Black, 0, 10);
-        graphics.DrawString($"Player's health: {this.PlayerShip.Health}", this.font, Brushes.Black, 0, 30);
-        graphics.DrawString($"Rotate angle: {this.PlayerShip.RotationDegrees}", this.font, Brushes.Black, 0, 50);
+        graphics.DrawString($"Player's health: {this.PlayerShip.Health}", this.font, Brushes.Black, 0, 35);
+        graphics.DrawString($"Rotate angle: {this.PlayerShip.RotationDegrees}", this.font, Brushes.Black, 0, 60);
+        graphics.DrawString($"Laser CD: {this.PlayerShip.DelayOfLaser}", this.font, Brushes.Black, 0, 85);
         
 #if DEBUG
-        graphics.DrawString($"X: {this.PlayerShip.PositionX}, Y: {this.PlayerShip.PositionY}", this.font, Brushes.Black, 0, 100);
-        graphics.DrawString($"Speed: {this.PlayerShip.Speed}", this.font, Brushes.Black, 0, 120);
+        graphics.DrawString($"X: {this.PlayerShip.PositionX}, Y: {this.PlayerShip.PositionY}", this.font, Brushes.Black, 0, 110);
+        graphics.DrawString($"Speed: {this.PlayerShip.Speed}", this.font, Brushes.Black, 0, 135);
 #endif
 
         if (this.currentState is DefeatState)

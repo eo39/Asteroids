@@ -28,6 +28,9 @@ internal class NormalState : IState
             case Keys.Space:
                 this.game.StartPlayerShipShooting();
                 break;
+            case Keys.X:
+                this.game.StartPlayerShipUsedLaser();
+                break;
             case Keys.ShiftKey:
                 this.game.SetCurrentState(this.game.ReverseState);
                 break;
@@ -52,6 +55,9 @@ internal class NormalState : IState
                 break;
             case Keys.Space:
                 this.game.StopPlayerShipShooting();
+                break;
+            case Keys.X:
+                this.game.StopPlayerShipUsedLaser();
                 break;
         }
     }

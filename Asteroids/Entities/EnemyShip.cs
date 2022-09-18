@@ -2,15 +2,14 @@
 
 internal class EnemyShip : GameObject
 {
-    public EnemyShip(int positionX, int positionY)
+    public EnemyShip(CreationParams creationParams) : base(creationParams)
     {
         this.Bitmap          = Properties.Resources.EnemyShip;
         this.ObjectType      = ObjectType.EnemyShip;
         
-        this.PositionX       = positionX;
-        this.PositionY       = positionY;
+        this.PositionX       = creationParams.PositionX;
+        this.PositionY       = creationParams.PositionY;
         
-        this.RotationDegrees = 135;
         this.Speed           = 5;
         this.Health          = 1;
         this.Size            = 80;

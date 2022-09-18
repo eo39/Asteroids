@@ -10,7 +10,7 @@ internal class CommandMove : ICommand
     public CommandMove(GameObject gameObject)
     {
         this.gameObject = gameObject;
-        this.offset     = gameObject.GetNewPosition();
+        this.offset     = gameObject.GetNextTickOffset();
     }
 
     public void Execute()

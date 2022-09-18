@@ -25,7 +25,14 @@ internal partial class Game
         this.GameFieldHeight = gameFieldHeight;
         this.Score           = 0;
 
-        this.GameObjects     = new List<GameObject> { new PlayerShip() };
+        var playerShipCreationParams = new CreationParams
+        {
+            PositionX = this.GameFieldWidth / 2,
+            PositionY = this.GameFieldHeight / 2
+        };
+        
+        this.GameObjects     = new List<GameObject> { new PlayerShip(playerShipCreationParams) };
+        
         this.CommandManager  = new CommandManager();
         
         this.NormalState     = new NormalState(this);
@@ -67,10 +74,10 @@ internal partial class Game
 
                 if (this.CanIntersect(gameObject, nextGameObject) &&
                     gameObject.IntersectsWith(nextGameObject) &&
-                    nextGameObject.Health > 0)
+                    nextGameObject.Health != 0)
                 {
                     int amountOfDamage = Math.Min(gameObject.Health, nextGameObject.Health);
-
+                    
                     this.CommandManager.ExecuteCommand(new CommandTakeDamage(gameObject, amountOfDamage));
                     this.CommandManager.ExecuteCommand(new CommandTakeDamage(nextGameObject, amountOfDamage));
                     
@@ -78,11 +85,11 @@ internal partial class Game
                     {
                         case ObjectType.PlayerShip:
                         case ObjectType.Bullet:
-                            if (nextGameObject.Health <= 0 && nextGameObject.ObjectType == ObjectType.EnemyShip)
+                            if (nextGameObject.Health == 0 && nextGameObject.ObjectType == ObjectType.EnemyShip)
                                 this.CommandManager.ExecuteCommand(new CommandChangeScore(this));
                             break;
                         case ObjectType.EnemyShip:
-                            if (gameObject.Health <= 0 && nextGameObject.ObjectType == ObjectType.Bullet)
+                            if (gameObject.Health == 0 && nextGameObject.ObjectType == ObjectType.Bullet)
                                 this.CommandManager.ExecuteCommand(new CommandChangeScore(this));
                             break;
                     }
@@ -95,8 +102,21 @@ internal partial class Game
 
                 if (gameObject.ObjectType == ObjectType.Meteor)
                 {
-                    var firstChip = new Chip(gameObject.PositionX + 5, gameObject.PositionY + 5);
-                    var secondChip = new Chip(gameObject.PositionX - 5, gameObject.PositionY - 5);
+                    var firstChipCreationParams = new CreationParams
+                    {
+                        PositionX       = gameObject.PositionX + 10,
+                        PositionY       = gameObject.PositionY + 10,
+                        RotationDegrees = gameObject.RotationDegrees + 45
+                    };
+                    var firstChip = new Chip(firstChipCreationParams);
+                    
+                    var secondChipCreationParams = new CreationParams
+                    {
+                        PositionX       = gameObject.PositionX - 10,
+                        PositionY       = gameObject.PositionY - 10,
+                        RotationDegrees = gameObject.RotationDegrees - 45 
+                    };
+                    var secondChip = new Chip(secondChipCreationParams);
 
                     GameObject[] chipsToCrete = { firstChip, secondChip };
                     
@@ -140,6 +160,16 @@ internal partial class Game
     {
         this.PlayerShip.StopShooting();
     }
+    
+    public void StartPlayerShipUsedLaser()
+    {
+        this.PlayerShip.StartUsedLaser();
+    }
+
+    public void StopPlayerShipUsedLaser()
+    {
+        this.PlayerShip.StopUsedLaser();
+    }
 
     private void GenerateEnemies()
     {
@@ -147,11 +177,18 @@ internal partial class Game
 
         for (int i = 0; i < generatedObjectsCount; i++)
         {
+            var creationParams = new CreationParams
+            {
+                PositionX       = Random.Next(0, this.GameFieldWidth),
+                PositionY       = Random.Next(0, this.GameFieldHeight),
+                RotationDegrees = Random.Next(0, 360)
+            };
+
             GameObject? generatedEnemy = Random.Next(1, 4) switch
             {
-                1 or 2 => new EnemyShip(this.GameFieldWidth, Random.Next(100, this.GameFieldHeight - 350)),
-                3 => new Meteor(Random.Next(this.GameFieldWidth - 100, this.GameFieldWidth), 0),
-                _ => null
+                1 or 2 => new EnemyShip(creationParams),
+                3      => new Meteor(creationParams),
+                _      => null
             };
 
             if (generatedEnemy != null)
@@ -180,13 +217,20 @@ internal partial class Game
                               ObjectType.Chip,
 
         [ObjectType.EnemyShip] = ObjectType.PlayerShip |
-                                 ObjectType.Bullet,
+                                 ObjectType.Bullet |
+                                 ObjectType.Laser,
 
         [ObjectType.Chip] = ObjectType.PlayerShip |
-                            ObjectType.Bullet,
+                            ObjectType.Bullet |
+                            ObjectType.Laser,
 
         [ObjectType.Meteor] = ObjectType.PlayerShip |
-                              ObjectType.Bullet
+                              ObjectType.Bullet |
+                              ObjectType.Laser,
+        
+        [ObjectType.Laser] = ObjectType.EnemyShip |
+                             ObjectType.Meteor |
+                             ObjectType.Chip
     };
 
     private bool CanIntersect(GameObject firstGameObject, GameObject secondGameObject)

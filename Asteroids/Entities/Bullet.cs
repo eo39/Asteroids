@@ -3,17 +3,13 @@
 internal class Bullet : GameObject
 {
     private int lifetime;
-    public Bullet(int positionX, int positionY, int rotationDegrees)
+    
+    public Bullet(CreationParams creationParams) : base(creationParams)
     {
         this.Bitmap          = Properties.Resources.Bullet;
         this.ObjectType      = ObjectType.Bullet;
         
-        this.PositionX       = positionX;
-        this.PositionY       = positionY;
-        
-        this.RotationDegrees = rotationDegrees;
-        this.Speed           = 20;
-        
+        this.Speed           = 10;
         this.Health          = 1;
         this.Size            = 14;
         this.lifetime        = 0;

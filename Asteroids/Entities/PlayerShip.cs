@@ -5,32 +5,30 @@ internal class PlayerShip : GameObject
     private MoveMode playerMoveMode;
     private bool isPlayerShooting;
     private int delayOfShot;
+    private bool isPlayerUsedLaser;
+    
+    public int DelayOfLaser { get; private set; }
 
-    public PlayerShip()
+    public PlayerShip(CreationParams creationParams) : base(creationParams)
     {
         this.Bitmap           = Properties.Resources.PlayerShip;
         this.ObjectType       = ObjectType.PlayerShip;
         
-        this.PositionX        = 100;
-        this.PositionY        = 375;
-        
-        this.RotationDegrees  = 0;
         this.Health           = 5;
         this.Size             = 80;
-        
-        this.delayOfShot      = 0;
         this.isPlayerShooting = false;
+        this.delayOfShot      = 0;
+
+        this.isPlayerUsedLaser = false;
     }
 
-    private void DecreaseDelayOfShot(int valueOfDecrease)
+    private void DecreaseWeaponsDelay()
     {
         if (this.delayOfShot > 0)
-            this.delayOfShot -= valueOfDecrease;
-    }
-
-    private void ReloadWeapon()
-    {
-        this.delayOfShot = 150;
+            this.delayOfShot--;
+        
+        if (this.DelayOfLaser > 0)
+            this.DelayOfLaser--;
     }
 
     public override void Update(Game game)
@@ -46,16 +44,42 @@ internal class PlayerShip : GameObject
 
         base.Update(game);
         
-        this.DecreaseDelayOfShot(15);
+        this.DecreaseWeaponsDelay();
 
         if (this.isPlayerShooting && this.delayOfShot <= 0)
         {
             var bulletPosition = this.GetBulletPosition();
-            var bullet = new Bullet(bulletPosition.X, bulletPosition.Y, this.RotationDegrees);
+            
+            var bulletCreationParams = new CreationParams
+            {
+                PositionX       = bulletPosition.X,
+                PositionY       = bulletPosition.Y,
+                RotationDegrees = this.RotationDegrees
+            };
+            
+            var bullet = new Bullet(bulletCreationParams);
             
             game.CommandManager.ExecuteCommand(new CommandCreate(game.GameObjects, bullet));
             
-            this.ReloadWeapon();
+            this.delayOfShot = 15;
+        }
+
+        if (this.isPlayerUsedLaser && this.DelayOfLaser <= 0)
+        {
+            Point bulletPosition = this.GetBulletPosition();
+            
+            var bulletCreationParams = new CreationParams
+            {
+                PositionX       = bulletPosition.X,
+                PositionY       = bulletPosition.Y,
+                RotationDegrees = this.RotationDegrees
+            };
+            
+            var bullet = new Laser(bulletCreationParams);
+            
+            game.CommandManager.ExecuteCommand(new CommandCreate(game.GameObjects, bullet));
+
+            this.DelayOfLaser = 150;
         }
     }
 
@@ -112,14 +136,23 @@ internal class PlayerShip : GameObject
         this.isPlayerShooting = false;
     }
     
+    public void StartUsedLaser()
+    {
+        this.isPlayerUsedLaser = true;
+    }
+
+    public void StopUsedLaser()
+    {
+        this.isPlayerUsedLaser = false;
+    }
+    
     private Point GetBulletPosition()
     {
-        double rotationAngle = Math.PI * this.RotationDegrees / 180.0;
+        double rotationAngle = this.RotationDegrees.ToRadians();
 
         int offsetX = (int) (Math.Cos(rotationAngle) * this.Size / 2);
         int offsetY = (int) (Math.Sin(rotationAngle) * this.Size / 2);
 
         return new Point(this.PositionX + offsetX, this.PositionY + offsetY);
     }
-
 }

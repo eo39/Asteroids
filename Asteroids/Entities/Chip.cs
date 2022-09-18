@@ -2,16 +2,12 @@
 
 internal class Chip : GameObject
 {
-    public Chip(int positionX, int positionY)
+    public Chip(CreationParams creationParams) : base(creationParams)
     {
         this.Bitmap          = Properties.Resources.Meteor;
         this.ObjectType      = ObjectType.Chip;
         
-        this.PositionX       = positionX;
-        this.PositionY       = positionY;
-        
-        this.RotationDegrees = 135;
-        this.Speed           = 5;
+        this.Speed           = 3;
         this.Health          = 1;
         this.Size            = 40;
     }

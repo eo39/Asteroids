@@ -7,5 +7,6 @@ internal enum ObjectType
     Bullet     = 2,
     EnemyShip  = 4,
     Meteor     = 8,
-    Chip       = 16
+    Chip       = 16,
+    Laser      = 32
 }
